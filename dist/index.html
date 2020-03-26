@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script type="text/javascript" src="bundle.js"></script>
+</head>
+
+<body>
+
+  <div>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
+  </div>
+
+  <div class="optionsContainer">
+    <div class="optionsColContainer">
+
+      <div class="optionsTitle">
+        <h2>Game Settings</h2>
+      </div>
+
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Grow rate</p>
+          <p id="growRateText">50</p>
+        </div>
+        <input id="growRateSlider" class="slider" autocomplete="off" type="range" min="1" max="50" step="1" value="50">
+      </div>
+
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Move amount per direction</p>
+          <p id="moveAmountText">10</p>
+        </div>
+        <input id="moveAmountSlider" class="slider" autocomplete="off" type="range" min="1" max="50" step="1"
+          value="10">
+      </div>
+
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Cube size</p>
+          <p id="cubeSizeText">50</p>
+        </div>
+        <input id="cubeSizeSlider" class="slider" autocomplete="off" type="range" min="10" max="100" step="1"
+          value="50">
+      </div>
+
+      <div class="multiButtonContainer">
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p id="mortalText">Immortal</p>
+          </div>
+          <label class="switch">
+            <input id="mortalToggle" autocomplete="off" type="checkbox" checked>
+            <span class="toggle"></span>
+          </label>
+        </div>
+
+        <div class="buttonContainer">
+          <div class="buttonText">
+            <p>Add Snake</p>
+          </div>
+          <label class="switch">
+            <input id="addSnakeButton" type="button">
+            <span class="button"></span>
+          </label>
+        </div>
+
+        <div class="buttonContainer">
+          <div class="buttonText">
+            <p>Add Tail</p>
+          </div>
+          <label class="switch">
+            <input id="addTailButton" type="button">
+            <span class="button"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="multiButtonContainer">
+        <div class="buttonContainer">
+          <div class="buttonText">
+            <p>Reset</p>
+          </div>
+          <label class="switch">
+            <input id="resetButton" type="button">
+            <span class="button"></span>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="optionsTitle">
+        <h3>Snake Direction</h3>
+      </div>
+
+      <div class="multiButtonContainer">
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>+ X</p>
+          </div>
+          <label class="switch">
+            <input id="xUpToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>Random</p>
+          </div>
+          <label class="switch">
+            <input id="randomDirToggle" autocomplete="off" type="checkbox" checked>
+            <span class="toggle"></span>
+          </label>
+        </div>
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>- X</p>
+          </div>
+          <label class="switch">
+            <input id="xDownToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+
+      </div>
+
+      <div class="multiButtonContainer">
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>+ Y</p>
+          </div>
+          <label class="switch">
+            <input id="yUpToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>- Y</p>
+          </div>
+          <label class="switch">
+            <input id="yDownToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="multiButtonContainer">
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>+ Z</p>
+          </div>
+          <label class="switch">
+            <input id="zUpToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>- Z</p>
+          </div>
+          <label class="switch">
+            <input id="zDownToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+      </div>
+
+      </div>
+
+    </div>
+
+    <div class="optionsColContainer">
+
+      <div class="optionsTitle">
+        <h2>Camera Settings</h2>
+      </div>
+
+      <!-- Translation -->
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Translation x</p>
+          <p id="cameraTXText">0</p>
+        </div>
+        <input id="cameraTXSlider" class="slider" autocomplete="off" type="range" min="-100" max="100" step="1"
+          value="0">
+      </div>
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Translation y</p>
+          <p id="cameraTYText">0</p>
+        </div>
+        <input id="cameraTYSlider" class="slider" autocomplete="off" type="range" min="-100" max="100" step="1"
+          value="0">
+      </div>
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Translation z</p>
+          <p id="cameraTZText">-100</p>
+        </div>
+        <input id="cameraTZSlider" class="slider" autocomplete="off" type="range" min="-200" max="0" step="1"
+          value="-100">
+      </div>
+      <!-- Rotation -->
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Rotatiom x</p>
+          <p id="cameraRXText">0</p>
+        </div>
+        <input id="cameraRXSlider" class="slider" autocomplete="off" type="range" min="-360" max="360" step="1"
+          value="0">
+      </div>
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Rotatiom y</p>
+          <p id="cameraRYText">0</p>
+        </div>
+        <input id="cameraRYSlider" class="slider" autocomplete="off" type="range" min="-360" max="360" step="1"
+          value="0">
+      </div>
+      <div class="sliderContainer">
+        <div class="sliderText">
+          <p>Rotatiom z</p>
+          <p id="cameraRZText">0</p>
+        </div>
+        <input id="cameraRZSlider" class="slider" autocomplete="off" type="range" min="-360" max="360" step="1"
+          value="0">
+      </div>
+
+      <div class="multiButtonContainer">
+        <div class="buttonContainer">
+          <div class="buttonText">
+            <p>Reset</p>
+          </div>
+          <label class="switch">
+            <input id="resetCameraButton" type="button">
+            <span class="button"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+</html>
