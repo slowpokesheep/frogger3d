@@ -11,8 +11,6 @@ import ObjectManager from './managers/objectManager';
 
 export const managers = {};
 
-export const muh = 0;
-
 window.onload = async () => {
   const canvas = document.getElementById('gl-canvas');
 
