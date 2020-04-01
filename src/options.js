@@ -47,7 +47,7 @@ export default class Options {
           },
         },
         z: {
-          value: -100,
+          value: -50,
           id: {
             text: document.getElementById('cameraTZText'),
             slider: document.getElementById('cameraTZSlider'),
@@ -56,7 +56,7 @@ export default class Options {
       },
       r: {
         x: {
-          value: 0,
+          value: 40,
           id: {
             text: document.getElementById('cameraRXText'),
             slider: document.getElementById('cameraRXSlider'),

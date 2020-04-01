@@ -59,18 +59,10 @@ export default class FroggerMap extends ComplexObject {
   resize() {
     this.objects.forEach((o, i) => {
       o.setScale(
-        this.froggerMap.size / this.froggerMap.gridSize,
+        this.froggerMap.blockSize,
         this.froggerMap.size / 4,
-        this.froggerMap.size / this.froggerMap.gridSize,
+        this.froggerMap.blockSize,
       );
-      /*
-      if (i <= 1 && false) {
-        o.setScale(this.froggerMap.size, this.froggerMap.size / 4, this.froggerMap.size);
-      }
-      else {
-        o.setScale(this.froggerMap.size / 14, this.froggerMap.size / 4, this.froggerMap.size / 14);
-      }
-      */
     });
   }
 
@@ -144,16 +136,6 @@ export default class FroggerMap extends ComplexObject {
         }
       }
 
-      /*
-      if (i === 0) {
-        gl.uniform4fv(shader.fragCol, [0.2, 0, 0, 0.001]);
-        //gl.cullFace(gl.FRONT);
-      }
-      else if (i % 2 === 0) {
-        gl.uniform4fv(shader.fragCol, [0, 0, 0.2, 0.001]);
-        //gl.cullFace(gl.FRONT);
-      }
-      */
       o.render();
       resetRender();
     });

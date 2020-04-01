@@ -94,8 +94,6 @@ export default class ObjectManager {
 
   update(du) {
 
-    //if (this.objects.length === 0) this.add(new Snake());
-
     // Complex object update, view matrix
     this.objects.forEach((obj) => {
       obj.update(du);

@@ -30,20 +30,18 @@ export default class BasicObject {
       size: [],
     };
 
+    this.basicObject = {
+      camera: false,
+    };
+
     this.basicKeys = {
-      off: 'C'.charCodeAt(0),
+      camera: 'C'.charCodeAt(0),
       up: 'W'.charCodeAt(0),    // y+
       left: 'A'.charCodeAt(0),  // x-
       down: 'S'.charCodeAt(0),  // y-
       right: 'D'.charCodeAt(0), // x+
       in: 'E'.charCodeAt(0),    // z-
       out: 'Q'.charCodeAt(0),   // z+
-      rotate: {
-        up: 'I'.charCodeAt(0),
-        left: 'J'.charCodeAt(0),
-        down: 'K'.charCodeAt(0),
-        right: 'L'.charCodeAt(0),
-      },
     };
 
     this.deathVector = { x: 0, y: 0, z: 0 };
@@ -77,10 +75,10 @@ export default class BasicObject {
     // Translation
     this.view.t.x = 0;
     this.view.t.y = 0;
-    this.view.t.z = -100;
+    this.view.t.z = -50;
 
     // Rotation
-    this.view.r.x = 0;
+    this.view.r.x = 40;
     this.view.r.y = 0;
     this.view.r.z = 0;
     this.setView();
@@ -275,42 +273,48 @@ export default class BasicObject {
       this.setView();
     }
 
-
-    // Keyboard camera movement
-    if (eatKey(this.basicKeys.up)) {
-      this.view.t.y += 1;
-      this.updateOptions();
-      this.setView();
+    if (eatKey(this.basicKeys.camera)) {
+      this.basicObject.camera = !this.basicObject.camera;
     }
 
-    if (eatKey(this.basicKeys.down)) {
-      this.view.t.y -= 1;
-      this.updateOptions();
-      this.setView();
-    }
+    if (this.basicObject.camera) {
 
-    if (eatKey(this.basicKeys.right)) {
-      this.view.t.x += 1;
-      this.updateOptions();
-      this.setView();
-    }
+      // Keyboard camera movement
+      if (eatKey(this.basicKeys.up)) {
+        this.view.t.y += 1;
+        this.updateOptions();
+        this.setView();
+      }
 
-    if (eatKey(this.basicKeys.left)) {
-      this.view.t.x -= 1;
-      this.updateOptions();
-      this.setView();
-    }
+      if (eatKey(this.basicKeys.down)) {
+        this.view.t.y -= 1;
+        this.updateOptions();
+        this.setView();
+      }
 
-    if (eatKey(this.basicKeys.in)) {
-      this.view.t.z -= 1;
-      this.updateOptions();
-      this.setView();
-    }
+      if (eatKey(this.basicKeys.right)) {
+        this.view.t.x += 1;
+        this.updateOptions();
+        this.setView();
+      }
 
-    if (eatKey(this.basicKeys.out)) {
-      this.view.t.z += 1;
-      this.updateOptions();
-      this.setView();
+      if (eatKey(this.basicKeys.left)) {
+        this.view.t.x -= 1;
+        this.updateOptions();
+        this.setView();
+      }
+
+      if (eatKey(this.basicKeys.in)) {
+        this.view.t.z -= 1;
+        this.updateOptions();
+        this.setView();
+      }
+
+      if (eatKey(this.basicKeys.out)) {
+        this.view.t.z += 1;
+        this.updateOptions();
+        this.setView();
+      }
     }
   }
 

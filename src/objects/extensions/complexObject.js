@@ -43,6 +43,14 @@ export default class ComplexObject {
     return null;
   }
 
+  // To check only one object
+  // eslint-disable-next-line class-methods-use-this
+  isObjectInvertColliding(i) {
+    const e = this.objects[i].isInvertColliding();
+    if (e) return e;
+    return null;
+  }
+
   setScale(x, y, z) {
     this.objects.forEach((o) => {
       o.setScale(x, y, z);

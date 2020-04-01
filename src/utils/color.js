@@ -17,6 +17,7 @@ export const colorObj = {
   magenta:  [1.0, 0.0, 1.0, 1.0],
   cyan:     [0.0, 1.0, 1.0, 1.0],
   white:    [1.0, 1.0, 1.0, 1.0],
+  brown:    [0.54, 0.27, 0.07, 1.0],
 };
 
 export const colorArray = [
