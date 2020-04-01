@@ -7,13 +7,20 @@ import Tester from './objects/tester';
 import Box from './objects/box';
 
 import Snake from './objects/snake';
+
+// Enviroments
 import SnakeBox from './objects/snakeBox';
+import FroggerMap from './objects/froggerMap';
+
 
 export function init() {
-  managers.obj.addEnviroment(new SnakeBox(Options.cubeSize.value));
+  managers.obj.addEnviroment(new FroggerMap(Options.cubeSize.value));
+  
+  /*
   managers.obj.add(
     new Snake(),
   );
+  */
 }
 
 export function addSnake() {

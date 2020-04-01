@@ -51,6 +51,9 @@ export default class CubeLines extends BasicObject {
     offset = off;
   }
 
+  // For debugging
+  getOffset() { return offset; }
+
   render() {
     super.render();
     gl.drawArrays(gl.LINE_STRIP, offset, this.prim.size);

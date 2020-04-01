@@ -9,7 +9,8 @@ export let gl;
 export const shader = {};
 
 let program;
-export const bufferSize = 10000; // 10 kb // 8 * 3
+//export const bufferSize = 10000; // 10 kb // 8 * 3
+export const bufferSize = 30000; // 30 kb // 8 * 3
 
 export const resetRender = () => {
   gl.uniform4fv(shader.fragCol, [0, 0, 0, 0]);

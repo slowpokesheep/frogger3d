@@ -54,6 +54,9 @@ export default class Cube extends BasicObject {
     offset = off;
   }
 
+  // For debugging
+  getOffset() { return offset; }
+
   render() {
     super.render();
     gl.drawArrays(gl.TRIANGLES, offset, this.prim.size);

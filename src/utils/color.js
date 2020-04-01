@@ -29,3 +29,8 @@ export const colorArray = [
   [0.0, 1.0, 1.0, 1.0], // cyan
   [1.0, 1.0, 1.0, 1.0], // white
 ];
+
+export const colorComplexArray = [
+  [0.2, 0, 0, 0.001], // Transparent red
+  [0, 0, 0.2, 0.001], // Transparent blue
+];

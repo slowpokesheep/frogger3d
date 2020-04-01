@@ -5,6 +5,8 @@ import Events from '../events';
 // Primitives
 import Cube from '../objects/primitives/cube';
 import CubeLines from '../objects/primitives/cubeLines';
+
+// Complex
 import Snake from '../objects/snake';
 
 export default class ObjectManager {
@@ -17,7 +19,7 @@ export default class ObjectManager {
       singleStep: 'O'.charCodeAt(0),
     };
 
-    // All objects will extend a primitive shape, cube, triangle, etc.
+    // All objects will be comprised of primitive shapes, cube, triangle, etc.
     this.primitives = [];
     this.primitives.push(new Cube());
     this.primitives.push(new CubeLines());
@@ -28,11 +30,12 @@ export default class ObjectManager {
 
     // Load primitives into the buffer
     let prevSize = 0;
+    let currOffset = 0;
 
     this.primitives.forEach((p) => {
 
       // Static variable in primitive to keep an offset where it's placed
-      const currOffset = prevSize;
+      currOffset += prevSize;
       p.setOffset(currOffset);
 
       // Primitive shapes points
@@ -91,7 +94,7 @@ export default class ObjectManager {
 
   update(du) {
 
-    if (this.objects.length === 0) this.add(new Snake());
+    //if (this.objects.length === 0) this.add(new Snake());
 
     // Complex object update, view matrix
     this.objects.forEach((obj) => {
