@@ -12,7 +12,7 @@ import CubeLines from './primitives/cubeLines';
 
 export default class Frog extends ComplexObject {
   constructor(s) {
-    super();
+    super(true);
 
     this.frog = {
       size: s,

@@ -15,29 +15,14 @@ export default class TreeTraffic extends ComplexObject {
       size: s,
       blockSize: s / 15,
       move: s / 15, // One grid block
-      numberLogs: 5,
+      numberLanes: 5,
+      logsPerLane: 1,
+      speed: [0.5, 1, 1.5],
     };
 
-    const speed = [1, 2, 3];
-
-    for (let i = 0; i < this.treeTraffic.numberLogs; ++i) {
-
-      // Update from 0, 0, 0 coord
-      const x = 7 * this.treeTraffic.move;
+    for (let i = 0; i < this.treeTraffic.numberLanes; ++i) {
       const z = (-i - 1) * this.treeTraffic.move;
-
-      const sp = Math.floor(Math.random() * speed.length);
-      const size = 3;
-
-      this.objects.push(new Treelog(
-        this.treeTraffic.size,
-        -1, // Direction x axis
-        x, // x position
-        z, // z position
-        speed[sp], // speed
-        colorObj.brown, // color
-        size, // size
-      ));
+      this.add(z);
     }
 
     this.resize();
@@ -53,16 +38,45 @@ export default class TreeTraffic extends ComplexObject {
     });
   }
 
+  add(z) {
+
+    const d = [-1, 1];
+    const dir = d[Math.floor(Math.random() * d.length)];
+
+    for (let i = 0; i < this.treeTraffic.logsPerLane; ++i) {
+      // Treelog sizes
+      const size = [2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 5, 6];
+      const s = Math.floor(Math.random() * size.length);
+
+      const x = -dir * 7 * this.treeTraffic.move; // Constant with map size 15
+      const speed = this.treeTraffic.speed[Math.floor(Math.random() * this.treeTraffic.speed.length)];
+
+      this.objects.push(new Treelog(
+        this.treeTraffic.size,
+        dir, // Direction x axis
+        x, // x position
+        z, // z position
+        speed, // speed
+        colorObj.brown, // color
+        size[s], // size
+      ));
+    }
+  }
+
   objectUpdate(du) {
     //this.checkOptions();
 
     // Movement update
-    if (eatKey('X'.charCodeAt(0))) {
-      this.objects.forEach((obj) => {
-        if (obj.isSubDead()) obj.deathUpdate(du);
-        else obj.objectUpdate(du);
-      });
-    }
+    this.objects.forEach((obj, i) => {
+      if (obj.isSubDead()) {
+        obj.treelog.subDead = false;
+
+        const { z } = obj.treelog;
+        this.objects.splice(i, 1);
+        this.add(z);
+      }
+      else obj.objectUpdate(du);
+    });
   }
 
   render() {

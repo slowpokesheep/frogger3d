@@ -8,12 +8,13 @@ import { currentTime } from '../../render';
 import { addFrog } from '../../loader';
 
 export default class ComplexObject {
-  constructor() {
+  constructor(p = false) {
     this.objects = [];
     this.deathObjects = [];
     this.dead = false;
     this.timeOfDeath = 0;
     this.deathAnimation = 3;
+    this.player = p; // Object is a player
   }
 
   isDead() {
@@ -40,6 +41,22 @@ export default class ComplexObject {
   isInvertColliding() {
     for (let i = 0; i < this.objects.length; ++i) {
       const e = this.objects[i].isInvertColliding();
+      if (e) return e;
+    }
+    return null;
+  }
+
+  isLeftInvertColliding() {
+    for (let i = 0; i < this.objects.length; ++i) {
+      const e = this.objects[i].isLeftInvertColliding();
+      if (e) return e;
+    }
+    return null;
+  }
+
+  isRightInvertColliding() {
+    for (let i = 0; i < this.objects.length; ++i) {
+      const e = this.objects[i].isRightInvertColliding();
       if (e) return e;
     }
     return null;
@@ -88,7 +105,7 @@ export default class ComplexObject {
     if (this.dead && currentTime - this.timeOfDeath >= this.deathAnimation) {
       this.dead = false;
       managers.obj.remove(this); // Remove from object manager
-      addFrog();
+      if (this.player) addFrog();
     }
   }
 

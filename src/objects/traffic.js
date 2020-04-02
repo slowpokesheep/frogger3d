@@ -18,7 +18,7 @@ export default class Traffic extends ComplexObject {
       numberCars: 5,
     };
 
-    const speed = [1, 2, 3];
+    const speed = [1, 2, 3, 2, 3, 1, 2, 3];
 
     for (let i = 0; i < this.traffic.numberCars; ++i) {
 
@@ -36,6 +36,10 @@ export default class Traffic extends ComplexObject {
       ));
     }
 
+    this.objects.forEach((o) => {
+      console.log(`o.speed = ${o.car.updateSpeed}`)
+    })
+
     this.resize();
   }
 
@@ -52,13 +56,10 @@ export default class Traffic extends ComplexObject {
   objectUpdate(du) {
     //this.checkOptions();
 
-    // Movement update
-    if (eatKey('Z'.charCodeAt(0))) {
-      this.objects.forEach((obj) => {
-        if (obj.isSubDead()) obj.deathUpdate(du);
-        else obj.objectUpdate(du);
-      });
-    }
+    this.objects.forEach((obj) => {
+      if (obj.isSubDead()) obj.deathUpdate(du);
+      else obj.objectUpdate(du);
+    });
   }
 
   render() {

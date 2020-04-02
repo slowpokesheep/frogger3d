@@ -10,7 +10,7 @@ import Cube from './primitives/cube';
 import CubeLines from './primitives/cubeLines';
 
 export default class Treelog extends ComplexObject {
-  constructor(s, direction, x = 0, z = 0, speed = 1, color = colorObj.red, size = 2) {
+  constructor(s, direction, x = 0, z = 0, updateSpeed = 1, color = colorObj.red, size = 2) {
     super();
 
     this.treelog = {
@@ -20,12 +20,13 @@ export default class Treelog extends ComplexObject {
       y: 6,
       z,
       move: s / 15,
-      direction, // -x
-      speed,
+      direction, // x
+      updateSpeed,
       color,
       left: 0,
       right: 0,
       subDead: false, // Hotfix
+      prevTime: 0,
     };
 
     // Left and right side of the water
@@ -74,30 +75,40 @@ export default class Treelog extends ComplexObject {
 
   checkCollision(du, object, i) {
 
-    // Inverse collision, move it to the other side of the box
-    const ob = this.isObjectInvertColliding(i);
-    if (ob) {
-
-      if (i === 0) this.subDead = true;
-      /*
-      if (this.treelog.direction) { // right, +x
-        object.setTranslation(this.treelog.left, this.treelog.y, this.treelog.z);
+    // Only deal with left collision if the logs is moving to the left
+    let ob = this.isLeftInvertColliding();
+    if (ob) { // left, -x
+      if (this.treelog.direction === -1) {
+        this.objects.splice(i, 2);
+        if (this.objects.length === 0) {
+          this.subDead = true;
+        }
+        return true;
       }
-      else { // left, -x
-        object.setTranslation(this.treelog.left, this.treelog.y, this.treelog.z);
-      }
-      */
     }
+    // Only deal with right collision if the logs is moving to the right
+    ob = this.isRightInvertColliding();
+    if (ob) { // right, +x
+      if (this.treelog.direction === 1) {
+        this.objects.splice(i, 2);
+        if (this.objects.length === 0) {
+          this.subDead = true;
+        }
+        return true;
+      }
+    }
+
+    return false;
   }
 
   move(o) {
-    const m = this.treelog.speed * this.treelog.move;
+    const m = this.treelog.move;
 
-    if (this.treelog.direction) { // +x
-      o.modTranslation(-m, 0, 0);
-    }
-    else { // -x
+    if (this.treelog.direction === 1) { // right, +x
       o.modTranslation(m, 0, 0);
+    }
+    else { // left, -x
+      o.modTranslation(-m, 0, 0);
     }
   }
 
@@ -105,10 +116,19 @@ export default class Treelog extends ComplexObject {
     //this.checkOptions();
 
     // Movement update
-    this.objects.forEach((o, i) => {
-      this.move(o, i);
-      this.checkCollision(du, o, i);
-    });
+    if (currentTime - this.treelog.prevTime >= this.treelog.updateSpeed) {
+
+      // Movement and collision detection seperate because of splice
+      // and smoother transiton
+      this.objects.forEach((o) => {
+        this.move(o);
+      });
+
+      this.objects.forEach((o, i) => {
+        if (i % 2 === 0) this.checkCollision(du, o, i);
+      });
+      this.treelog.prevTime = currentTime;
+    }
   }
 
   render() {

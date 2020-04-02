@@ -70,6 +70,36 @@ export default class SpatialManager {
     return null;
   }
 
+  invertLeftCollision(pos, radius) {
+    for (let i = 0; i < this.spatial.enviroments.length; ++i) {
+      const env = this.spatial.enviroments[i];
+
+      if (env) {
+        const cubeWall = Options.cubeSize.value / 2;
+
+        if (pos.x <= -cubeWall) {
+          return env;
+        }
+      }
+    }
+    return null;
+  }
+
+  invertRightCollision(pos, radius) {
+    for (let i = 0; i < this.spatial.enviroments.length; ++i) {
+      const env = this.spatial.enviroments[i];
+
+      if (env) {
+        const cubeWall = Options.cubeSize.value / 2;
+
+        if (pos.x >= cubeWall) {
+          return env;
+        }
+      }
+    }
+    return null;
+  }
+
   // Hotfix, check for water collision on the map
   envCollision(pos, radius) {
 

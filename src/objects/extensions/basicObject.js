@@ -110,6 +110,20 @@ export default class BasicObject {
     return e;
   }
 
+  isLeftInvertColliding() {
+    managers.spatial.unregister(this);
+    const e = managers.spatial.invertLeftCollision(this.model.t, this.model.s.x / 2);
+    managers.spatial.register(this);
+    return e;
+  }
+
+  isRightInvertColliding() {
+    managers.spatial.unregister(this);
+    const e = managers.spatial.invertRightCollision(this.model.t, this.model.s.x / 2);
+    managers.spatial.register(this);
+    return e;
+  }
+
   isEnvColliding() {
     managers.spatial.unregister(this);
     const e = managers.spatial.envCollision(this.model.t, this.model.s.x / 2);
