@@ -17,7 +17,7 @@ export default class Treelog extends ComplexObject {
       size,
       blockSize: s / 15,
       x,
-      y: 6,
+      y: 7,
       z,
       move: s / 15,
       direction, // x
@@ -26,17 +26,19 @@ export default class Treelog extends ComplexObject {
       left: 0,
       right: 0,
       subDead: false, // Hotfix
+      subTimeOfDeath: 0,
       prevTime: 0,
+      moving: false,
     };
 
     // Left and right side of the water
-    this.treelog.left = 7 * this.treelog.move;
-    this.treelog.right = -7 * this.treelog.move;
+    this.treelog.right = 7 * this.treelog.move;
+    this.treelog.left = -7 * this.treelog.move;
 
     // Head
-    this.objects.push(new Cube(true, false));
+    this.objects.push(new Cube(true, false, this));
     this.objects[0].setTranslation(this.treelog.x, this.treelog.y, this.treelog.z);
-    this.objects.push(new CubeLines(true, false));
+    this.objects.push(new CubeLines(true, false, this));
     this.objects[1].setTranslation(this.treelog.x, this.treelog.y, this.treelog.z);
 
     const head = {
@@ -46,11 +48,11 @@ export default class Treelog extends ComplexObject {
     };
 
     for (let i = 1; i < this.treelog.size; ++i) {
-      const cube = new Cube(true, false);
+      const cube = new Cube(true, false, this);
       cube.setTranslation(head.x + (i * this.treelog.move), head.y, head.z);
       this.objects.push(cube);
 
-      const cubeLines = new CubeLines(true, false);
+      const cubeLines = new CubeLines(true, false, this);
       cubeLines.setTranslation(head.x + (i * this.treelog.move), head.y, head.z);
       this.objects.push(cubeLines);
     }
@@ -62,14 +64,14 @@ export default class Treelog extends ComplexObject {
     this.objects.forEach((o, i) => {
       o.setScale(
         this.treelog.blockSize,
-        this.treelog.blockSize,
+        this.treelog.blockSize / 16,
         this.treelog.blockSize,
       );
     });
   }
 
   isSubDead() {
-    if (this.subDead) return true;
+    if (this.treelog.subDead) return true;
     return false;
   }
 
@@ -81,7 +83,8 @@ export default class Treelog extends ComplexObject {
       if (this.treelog.direction === -1) {
         this.objects.splice(i, 2);
         if (this.objects.length === 0) {
-          this.subDead = true;
+          this.treelog.subDead = true;
+          this.treelog.subTimeOfDeath = currentTime;
         }
         return true;
       }
@@ -92,7 +95,8 @@ export default class Treelog extends ComplexObject {
       if (this.treelog.direction === 1) {
         this.objects.splice(i, 2);
         if (this.objects.length === 0) {
-          this.subDead = true;
+          this.treelog.subDead = true;
+          this.treelog.subTimeOfDeath = currentTime;
         }
         return true;
       }
@@ -120,6 +124,7 @@ export default class Treelog extends ComplexObject {
 
       // Movement and collision detection seperate because of splice
       // and smoother transiton
+      this.treelog.moving = true;
       this.objects.forEach((o) => {
         this.move(o);
       });

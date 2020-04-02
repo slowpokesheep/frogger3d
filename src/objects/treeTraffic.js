@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { gl, shader, resetRender } from '../setup/webgl';
+import { currentTime } from '../render';
 import Options from '../options';
 import ComplexObject from './extensions/complexObject';
 import { colorObj, colorArray } from '../utils/color';
@@ -18,24 +19,13 @@ export default class TreeTraffic extends ComplexObject {
       numberLanes: 5,
       logsPerLane: 1,
       speed: [0.5, 1, 1.5],
+      spawnTimer: 1, // 1 sec spawn delay
     };
 
     for (let i = 0; i < this.treeTraffic.numberLanes; ++i) {
       const z = (-i - 1) * this.treeTraffic.move;
       this.add(z);
     }
-
-    this.resize();
-  }
-
-  resize() {
-    this.objects.forEach((o, i) => {
-      o.setScale(
-        this.treeTraffic.blockSize,
-        this.treeTraffic.blockSize,
-        this.treeTraffic.blockSize,
-      );
-    });
   }
 
   add(z) {
@@ -68,7 +58,9 @@ export default class TreeTraffic extends ComplexObject {
 
     // Movement update
     this.objects.forEach((obj, i) => {
-      if (obj.isSubDead()) {
+
+      // Spawn new treelog in lane, with a spawndelay
+      if (obj.isSubDead() && currentTime - obj.treelog.subTimeOfDeath >= this.treeTraffic.spawnTimer) {
         obj.treelog.subDead = false;
 
         const { z } = obj.treelog;

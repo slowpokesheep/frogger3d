@@ -27,18 +27,25 @@ export default class Frog extends ComplexObject {
       direction: -1, // -1 = -x, 1 = x, -2 = -z, 2 = z
       left: 0, // left side of the map
       right: 0, // right side of the map
+      collis: {
+        first: true, // first step onto treelog
+        z: null, // lane
+        log: false, // on a treelog
+      },
+      x: 0,
+      y: 8,
+      z: 0,
     };
 
     // Update from 0, 0, 0 coord
-    const z = 7 * this.frog.move;
-    const y = 8;
+    this.frog.z = 7 * this.frog.move;
 
     // Left and right side of the map
     this.frog.left = -7 * this.frog.move;
     this.frog.right = 7 * this.frog.move;
 
     this.objects.push(new Cube());
-    this.objects[0].setTranslation(0, y, z);
+    this.objects[0].setTranslation(0, this.frog.y, this.frog.z);
 
     this.resize();
   }
@@ -93,19 +100,57 @@ export default class Frog extends ComplexObject {
         object.setTranslation(x, y, z + this.frog.move);
       }
       else if (this.frog.direction === 1) { // right, +x
-        object.setTranslation(this.frog.left, y, z);
+
+        if (this.frog.collis.log) {
+          object.setTranslation(x - this.frog.move, y, z);
+        }
+        else object.setTranslation(this.frog.left, y, z);
       }
-      else { // left, -x
-        object.setTranslation(this.frog.right, y, z);
+      else if ((this.frog.direction === -1)) {
+        if (this.frog.collis.log) { // left, -x
+          object.setTranslation(x + this.frog.move, y, z);
+        }
+        else object.setTranslation(this.frog.right, y, z);
       }
     }
 
     // Object collision
     ob = this.isColliding();
 
+    // Reset
+    if (!ob) {
+      object.setTranslation(object.model.t.x, this.frog.y, object.model.t.z);
+      this.frog.collis.first = true;
+      this.frog.collis.log = false;
+    }
+
     // Specific check for platforms (treelogs)
+    /* Flow control, platforms overwrite enviroment deaths */
     if (ob && !ob.basicObject.killer) {
-      /* Flow control, platforms overwrite enviroment deaths */
+
+      const { x, y, z } = ob.model.t;
+
+      if (this.frog.collis.z !== z && this.frog.collis.z !== null) {
+        this.frog.collis.first = true;
+      }
+
+      this.frog.collis.z = z; // Controller to determine the lane
+
+      // Move the frog with the treelog
+      if (ob.basicObject.parent.treelog.moving) {
+
+        // Ignore stepping onto the treelog (first step)
+        if (!this.frog.collis.first) {
+          const m = ob.basicObject.parent.treelog.direction * this.frog.move;
+          object.setTranslation(object.model.t.x + m, object.model.t.y, object.model.t.z);
+        }
+        ob.basicObject.parent.treelog.moving = false;
+        this.frog.collis.first = false;
+      }
+
+      // Elevate the frog
+      object.setTranslation(object.model.t.x, y + 2, object.model.t.z);
+      this.frog.collis.log = true;
     }
     else if (ob && !this.dead && !Options.mortal.on) {
 

@@ -18,27 +18,15 @@ export default class Traffic extends ComplexObject {
       numberCars: 5,
     };
 
-    const speed = [1, 2, 3, 2, 3, 1, 2, 3];
-
     for (let i = 0; i < this.traffic.numberCars; ++i) {
-
-      // Update from 0, 0, 0 coord
-      const x = 7 * this.traffic.move;
       const z = 5 * this.traffic.move - (i * this.traffic.move);
 
       this.objects.push(new Car(
         this.traffic.size,
-        -1, // Direction x axis
-        x, // x position
         z, // z position
-        speed[Math.floor(Math.random() * speed.length)], // speed
         colorArray[i + 1], // color
       ));
     }
-
-    this.objects.forEach((o) => {
-      console.log(`o.speed = ${o.car.updateSpeed}`)
-    })
 
     this.resize();
   }

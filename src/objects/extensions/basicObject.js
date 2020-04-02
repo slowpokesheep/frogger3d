@@ -22,7 +22,7 @@ import { flatten } from '../../Common/MV';
 */
 
 export default class BasicObject {
-  constructor(spatial = true, k = true) {
+  constructor(spatial = true, k = true, p = null) {
 
     this.prim = {
       points: [],
@@ -33,6 +33,7 @@ export default class BasicObject {
     this.basicObject = {
       camera: false,
       killer: k,
+      parent: p,
     };
 
     this.basicKeys = {
