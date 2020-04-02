@@ -17,7 +17,7 @@ export default class Treelog extends ComplexObject {
       size,
       blockSize: s / 15,
       x,
-      y: 8,
+      y: 6,
       z,
       move: s / 15,
       direction, // -x
@@ -33,9 +33,9 @@ export default class Treelog extends ComplexObject {
     this.treelog.right = -7 * this.treelog.move;
 
     // Head
-    this.objects.push(new Cube());
+    this.objects.push(new Cube(true, false));
     this.objects[0].setTranslation(this.treelog.x, this.treelog.y, this.treelog.z);
-    this.objects.push(new CubeLines());
+    this.objects.push(new CubeLines(true, false));
     this.objects[1].setTranslation(this.treelog.x, this.treelog.y, this.treelog.z);
 
     const head = {
@@ -45,11 +45,11 @@ export default class Treelog extends ComplexObject {
     };
 
     for (let i = 1; i < this.treelog.size; ++i) {
-      const cube = new Cube();
+      const cube = new Cube(true, false);
       cube.setTranslation(head.x + (i * this.treelog.move), head.y, head.z);
       this.objects.push(cube);
 
-      const cubeLines = new CubeLines();
+      const cubeLines = new CubeLines(true, false);
       cubeLines.setTranslation(head.x + (i * this.treelog.move), head.y, head.z);
       this.objects.push(cubeLines);
     }

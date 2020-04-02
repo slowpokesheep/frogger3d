@@ -26,11 +26,9 @@ export default class FroggerMap extends ComplexObject {
     const left = -n;
     const right = n;
 
-    // Center cube
-    this.objects.push(new Cube());
-    this.objects.push(new CubeLines());
+    let id = 0;
 
-    // From bot-left to top-right
+    // From bot-left to top-right, center of the map has to be at 0, 0 for it to rotate correctly
     // Rows
     for (let i = this.froggerMap.gridSize - n - 1; i > -n - 1; --i) {
 
@@ -45,12 +43,13 @@ export default class FroggerMap extends ComplexObject {
 
         this.objects.push(cube);
         this.objects.push(cubeLines);
+        id++;
       }
     }
 
     // The size of each row, for the render function
     for (let i = 1; i <= this.froggerMap.gridSize; ++i) {
-      this.froggerMap.row.push((2 * i * this.froggerMap.gridSize) + 1);
+      this.froggerMap.row.push((2 * i * this.froggerMap.gridSize));
     }
 
     this.resize();
@@ -81,57 +80,52 @@ export default class FroggerMap extends ComplexObject {
   render() {
     this.objects.forEach((o, i) => {
 
-      // Special case center block to rotate the map correctly,
-      // it has to be block 0 (so it doesn't follow the rules of the grid)
-      if (i === 0) {
-        gl.uniform4fv(shader.fragCol, colorObj.magenta);
-      }
-
       if (i % 2 === 0) {
 
-        if (i <= this.froggerMap.row[0] && i !== 0) { // Row 0
+        // Row 0 closest row (+z)
+        if (i < this.froggerMap.row[0]) { // Row 0
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
-        else if (i > this.froggerMap.row[0] && i <= this.froggerMap.row[1] && i !== 0) { // Row 1
+        else if (i >= this.froggerMap.row[0] && i < this.froggerMap.row[1]) { // Row 1
           gl.uniform4fv(shader.fragCol, colorObj.magenta);
         }
-        else if (i > this.froggerMap.row[1] && i <= this.froggerMap.row[2] && i !== 0) { // Row 2
+        else if (i >= this.froggerMap.row[1] && i < this.froggerMap.row[2]) { // Row 2
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
-        else if (i > this.froggerMap.row[2] && i <= this.froggerMap.row[3] && i !== 0) { // Row 3
+        else if (i >= this.froggerMap.row[2] && i < this.froggerMap.row[3]) { // Row 3
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
-        else if (i > this.froggerMap.row[3] && i <= this.froggerMap.row[4] && i !== 0) { // Row 4
+        else if (i >= this.froggerMap.row[3] && i < this.froggerMap.row[4]) { // Row 4
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
-        else if (i > this.froggerMap.row[4] && i <= this.froggerMap.row[5] && i !== 0) { // Row 5
+        else if (i >= this.froggerMap.row[4] && i < this.froggerMap.row[5]) { // Row 5
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
-        else if (i > this.froggerMap.row[5] && i <= this.froggerMap.row[6] && i !== 0) { // Row 6
+        else if (i >= this.froggerMap.row[5] && i < this.froggerMap.row[6]) { // Row 6
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
-        else if (i > this.froggerMap.row[6] && i <= this.froggerMap.row[7] && i !== 0) { // Row 7
+        else if (i >= this.froggerMap.row[6] && i < this.froggerMap.row[7]) { // Row 7
           gl.uniform4fv(shader.fragCol, colorObj.magenta);
         }
-        else if (i > this.froggerMap.row[7] && i <= this.froggerMap.row[8] && i !== 0) { // Row 8
+        else if (i >= this.froggerMap.row[7] && i < this.froggerMap.row[8]) { // Row 8
           gl.uniform4fv(shader.fragCol, colorObj.blue);
         }
-        else if (i > this.froggerMap.row[8] && i <= this.froggerMap.row[9] && i !== 0) { // Row 9
+        else if (i >= this.froggerMap.row[8] && i < this.froggerMap.row[9]) { // Row 9
           gl.uniform4fv(shader.fragCol, colorObj.blue);
         }
-        else if (i > this.froggerMap.row[9] && i <= this.froggerMap.row[10] && i !== 0) { // Row 10
+        else if (i >= this.froggerMap.row[9] && i < this.froggerMap.row[10]) { // Row 10
           gl.uniform4fv(shader.fragCol, colorObj.blue);
         }
-        else if (i > this.froggerMap.row[10] && i <= this.froggerMap.row[11] && i !== 0) { // Row 11
+        else if (i >= this.froggerMap.row[10] && i < this.froggerMap.row[11]) { // Row 11
           gl.uniform4fv(shader.fragCol, colorObj.blue);
         }
-        else if (i > this.froggerMap.row[11] && i <= this.froggerMap.row[12] && i !== 0) { // Row 12
+        else if (i >= this.froggerMap.row[11] && i < this.froggerMap.row[12]) { // Row 12
           gl.uniform4fv(shader.fragCol, colorObj.blue);
         }
-        else if (i > this.froggerMap.row[12] && i <= this.froggerMap.row[13] && i !== 0) { // Row 13
+        else if (i >= this.froggerMap.row[12] && i < this.froggerMap.row[13]) { // Row 13
           gl.uniform4fv(shader.fragCol, colorObj.green);
         }
-        else if (i > this.froggerMap.row[13] && i <= this.froggerMap.row[14] && i !== 0) { // Row 14
+        else if (i >= this.froggerMap.row[13] && i < this.froggerMap.row[14]) { // Row 14
           gl.uniform4fv(shader.fragCol, colorObj.black);
         }
       }

@@ -22,7 +22,7 @@ import { flatten } from '../../Common/MV';
 */
 
 export default class BasicObject {
-  constructor(spatial = true) {
+  constructor(spatial = true, k = true) {
 
     this.prim = {
       points: [],
@@ -32,6 +32,7 @@ export default class BasicObject {
 
     this.basicObject = {
       camera: false,
+      killer: k,
     };
 
     this.basicKeys = {
@@ -105,6 +106,13 @@ export default class BasicObject {
   isInvertColliding() {
     managers.spatial.unregister(this);
     const e = managers.spatial.invertCollision(this.model.t, this.model.s.x / 2);
+    managers.spatial.register(this);
+    return e;
+  }
+
+  isEnvColliding() {
+    managers.spatial.unregister(this);
+    const e = managers.spatial.envCollision(this.model.t, this.model.s.x / 2);
     managers.spatial.register(this);
     return e;
   }

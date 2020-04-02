@@ -10,8 +10,8 @@ import BasicObject from '../extensions/basicObject';
 let offset;
 
 export default class CubeLines extends BasicObject {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
 
     this.cube();
     this.prim.size = this.prim.points.length;

@@ -8,6 +8,7 @@ import CubeLines from '../objects/primitives/cubeLines';
 
 // Complex
 import Snake from '../objects/snake';
+import Frog from '../objects/frog';
 
 export default class ObjectManager {
   constructor() {

@@ -27,8 +27,8 @@ export default class Car extends ComplexObject {
     };
 
     // Left and right side of the street
-    this.car.left = 7 * this.car.move;
-    this.car.right = -7 * this.car.move;
+    this.car.left = -7 * this.car.move;
+    this.car.right = 7 * this.car.move;
 
     this.objects.push(new Cube());
     this.objects[0].setTranslation(this.car.x, this.car.y, this.car.z);
@@ -59,11 +59,11 @@ export default class Car extends ComplexObject {
 
       // if (i === 0) this.subDead = true;
 
-      if (this.car.direction) { // right, +x
+      if (this.car.direction === 1) { // right, +x
         object.setTranslation(this.car.left, this.car.y, this.car.z);
       }
       else { // left, -x
-        object.setTranslation(this.car.left, this.car.y, this.car.z);
+        object.setTranslation(this.car.right, this.car.y, this.car.z);
       }
     }
   }

@@ -5,6 +5,7 @@
 */
 import { managers } from '../../index';
 import { currentTime } from '../../render';
+import { addFrog } from '../../loader';
 
 export default class ComplexObject {
   constructor() {
@@ -23,6 +24,14 @@ export default class ComplexObject {
   isColliding() {
     for (let i = 0; i < this.objects.length; ++i) {
       const e = this.objects[i].isColliding();
+      if (e) return e;
+    }
+    return null;
+  }
+
+  isEnvColliding() {
+    for (let i = 0; i < this.objects.length; ++i) {
+      const e = this.objects[i].isEnvColliding();
       if (e) return e;
     }
     return null;
@@ -79,6 +88,7 @@ export default class ComplexObject {
     if (this.dead && currentTime - this.timeOfDeath >= this.deathAnimation) {
       this.dead = false;
       managers.obj.remove(this); // Remove from object manager
+      addFrog();
     }
   }
 

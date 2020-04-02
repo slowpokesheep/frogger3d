@@ -38,8 +38,6 @@ export default class TreeTraffic extends ComplexObject {
         colorObj.brown, // color
         size, // size
       ));
-
-      console.log(`speed = ${speed[sp]}`)
     }
 
     this.resize();

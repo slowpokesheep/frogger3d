@@ -10,8 +10,8 @@ import BasicObject from '../extensions/basicObject';
 let offset;
 
 export default class Cube extends BasicObject {
-  constructor(args) {
-    super(args);
+  constructor(...args) {
+    super(...args);
 
     this.colorCube();
     this.prim.size = this.prim.points.length;

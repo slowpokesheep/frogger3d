@@ -24,6 +24,10 @@ export function init() {
   );
 }
 
+export function addFrog() {
+  managers.obj.add(new Frog(Options.cubeSize.value));
+}
+
 export function addSnake() {
   managers.obj.add(new Snake());
 }
