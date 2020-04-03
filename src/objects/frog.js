@@ -2,10 +2,11 @@
 /* eslint-disable import/no-cycle */
 import { gl, shader, resetRender } from '../setup/webgl';
 import { currentTime } from '../render';
+import { managers } from '../index';
 import Options from '../options';
 import ComplexObject from './extensions/complexObject';
 import { eatKey } from '../globalKeyHandler';
-import { colorObj } from '../utils/color';
+import { colorObj, colorComplexObj } from '../utils/color';
 
 import Cube from './primitives/cube';
 import CubeLines from './primitives/cubeLines';
@@ -27,10 +28,12 @@ export default class Frog extends ComplexObject {
       direction: -1, // -1 = -x, 1 = x, -2 = -z, 2 = z
       left: 0, // left side of the map
       right: 0, // right side of the map
+      moving: false, // Controller to check frog movement
       collis: {
         first: true, // first step onto treelog
         z: null, // lane
         log: false, // on a treelog
+        prev: null, // Previous collision object
       },
       x: 0,
       y: 8,
@@ -82,6 +85,12 @@ export default class Frog extends ComplexObject {
       o.modTranslation(this.frog.move, 0, 0);
       this.frog.direction = 1;
     }
+
+    if (Options.lookAt) {
+      const { x, y, z } = this.objects[0].model.t;
+      managers.obj.setLookAtView(x, y, z, this.frog.blockSize);
+    }
+    else this.objects[0].setView();
   }
 
   checkCollision(du, object, i) {
@@ -112,13 +121,23 @@ export default class Frog extends ComplexObject {
         }
         else object.setTranslation(this.frog.right, y, z);
       }
+
+      this.frog.moving = true;
+    }
+    else {
+      this.frog.moving = false;
     }
 
     // Object collision
     ob = this.isColliding();
+    const currOb = ob;
 
-    // Reset
-    if (!ob) {
+    // Edge case when stepping onto the edge of the treelog
+    if (!ob && this.frog.collis.prev && !this.frog.moving && this.frog.collis.log) {
+      ob = this.frog.collis.prev;
+    }
+
+    if (!ob) { // Reset
       object.setTranslation(object.model.t.x, this.frog.y, object.model.t.z);
       this.frog.collis.first = true;
       this.frog.collis.log = false;
@@ -130,6 +149,7 @@ export default class Frog extends ComplexObject {
 
       const { x, y, z } = ob.model.t;
 
+      // Controller for changing lanes on the water
       if (this.frog.collis.z !== z && this.frog.collis.z !== null) {
         this.frog.collis.first = true;
       }
@@ -139,11 +159,17 @@ export default class Frog extends ComplexObject {
       // Move the frog with the treelog
       if (ob.basicObject.parent.treelog.moving) {
 
+        const m = ob.basicObject.parent.treelog.direction * this.frog.move;
+
         // Ignore stepping onto the treelog (first step)
         if (!this.frog.collis.first) {
-          const m = ob.basicObject.parent.treelog.direction * this.frog.move;
           object.setTranslation(object.model.t.x + m, object.model.t.y, object.model.t.z);
         }
+        // Move the frog back if it goes out of bounds with the treelog
+        if (object.model.t.x < this.frog.left || object.model.t.x > this.frog.right) {
+          object.setTranslation(object.model.t.x - m, object.model.t.y, object.model.t.z);
+        }
+
         ob.basicObject.parent.treelog.moving = false;
         this.frog.collis.first = false;
       }
@@ -152,23 +178,31 @@ export default class Frog extends ComplexObject {
       object.setTranslation(object.model.t.x, y + 2, object.model.t.z);
       this.frog.collis.log = true;
     }
-    else if (ob && !this.dead && !Options.mortal.on) {
+    else if (ob && !this.dead && Options.mortal.on) {
 
       this.dead = true;
       this.death(); // Spawn death animation
       this.timeOfDeath = currentTime; // Death animation play time
-
-      console.log('Collision Death!');
     }
-    else { // Enviroment hazards (water)
-      ob = this.isEnvColliding();
-      if (ob) {
+    else { // Enviroment hazards, and victory line
+
+      // Water collision
+      let envOb = this.isEnvColliding();
+      if (envOb && !ob && !this.dead && Options.mortal.on) {
         this.dead = true;
         this.death(); // Spawn death animation
         this.timeOfDeath = currentTime; // Death animation play time
-        console.log('Water Death!');
+      }
+
+      // Victory collision, last row
+      envOb = this.isEnvVictoryColliding();
+      if (envOb && !ob && !this.victory) {
+        this.victory = true;
+        this.timeOfVictory = currentTime; // Death animation play time
       }
     }
+
+    this.frog.collis.prev = currOb;
   }
 
   death() {
@@ -221,11 +255,65 @@ export default class Frog extends ComplexObject {
     });
   }
 
+  victoryUpdate(du) {
+    this.objects.forEach((o) => {
+      o.setScale(
+        this.frog.blockSize,
+        this.frog.size / 4,
+        this.frog.blockSize,
+      );
+
+      const winPos = this.frog.left + (Options.frogWins.value % 15) * this.frog.move;
+      const { x, y, z } = o.model.t;
+
+      if (x <= winPos * 0.9995 && x >= winPos * 1.0005) {
+        if (y > 0) o.modTranslation(0, -1, 0);
+      }
+      else if (x >= winPos * 0.9995 && x <= winPos * 1.0005) {
+        if (y > 0) o.modTranslation(0, -1, 0);
+      }
+      else if (x < winPos) {
+        o.modTranslation(this.frog.move, 0, 0);
+      }
+      else {
+        o.modTranslation(-this.frog.move, 0, 0);
+      }
+
+      o.update(du);
+    });
+  }
+
+  victoryRender() {
+    this.objects.forEach((o) => {
+      if (Options.frogWins.value < 15) {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transRed2);
+      }
+      else if (Options.frogWins.value >= 15 && Options.frogWins.value < 30) {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transGreen2);
+      }
+      else if (Options.frogWins.value >= 30 && Options.frogWins.value < 45) {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transYellow2);
+      }
+      else if (Options.frogWins.value >= 45 && Options.frogWins.value < 60) {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue2);
+      }
+      else if (Options.frogWins.value >= 60 && Options.frogWins.value < 75) {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transRed);
+      }
+      else if (Options.frogWins.value >= 75 && Options.frogWins.value < 90) {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transGreen);
+      }
+      else {
+        gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue);
+      }
+      o.render();
+    });
+  }
+
   objectUpdate(du) {
-    //this.checkOptions();
+    //this.checkOptions();/
 
     // Movement update
-
     this.objects.forEach((o, i) => {
       this.move(o);
       this.checkCollision(du, o, i);

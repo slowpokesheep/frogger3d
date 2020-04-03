@@ -51,6 +51,11 @@ body {
   margin: 15px;
 }
 
+.optionsList {
+  list-style-type: none;
+  margin: 15px;
+}
+
 .optionsContainer {
   display: flex;
   flex-direction: row;

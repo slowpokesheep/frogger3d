@@ -93,6 +93,17 @@ export default class ObjectManager {
     }
   }
 
+  setLookAtView(x, y, z, blockSize) {
+    // Complex object update, view matrix
+    this.objects.forEach((obj) => {
+      obj.setLookAtView(x, y, z, blockSize);
+    });
+
+    this.enviroments.forEach((obj) => {
+      obj.setLookAtView(x, y, z, blockSize);
+    });
+  }
+
   update(du) {
 
     // Complex object update, view matrix
@@ -108,11 +119,13 @@ export default class ObjectManager {
     if (!Events.toggleKeys[this.objManKeys.pause]) {
       this.objects.forEach((obj) => {
         if (obj.isDead()) obj.deathUpdate(du);
+        else if (obj.isVictory()) obj.victoryUpdate(du);
         else obj.objectUpdate(du);
       });
 
       this.enviroments.forEach((obj) => {
         if (obj.isDead()) obj.deathUpdate(du);
+        else if (obj.isVictory()) obj.victoryUpdate(du);
         else obj.objectUpdate(du);
       });
     }
@@ -121,11 +134,13 @@ export default class ObjectManager {
   render() {
     this.objects.forEach((obj) => {
       if (obj.isDead()) obj.deathRender();
+      else if (obj.isVictory()) obj.victoryRender();
       else obj.render();
     });
 
     this.enviroments.forEach((obj) => {
       if (obj.isDead()) obj.deathRender();
+      else if (obj.isVictory()) obj.victoryRender();
       else obj.render();
     });
   }

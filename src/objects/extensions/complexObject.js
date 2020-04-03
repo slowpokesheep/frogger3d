@@ -6,6 +6,7 @@
 import { managers } from '../../index';
 import { currentTime } from '../../render';
 import { addFrog } from '../../loader';
+import Options from '../../options';
 
 export default class ComplexObject {
   constructor(p = false) {
@@ -14,11 +15,22 @@ export default class ComplexObject {
     this.dead = false;
     this.timeOfDeath = 0;
     this.deathAnimation = 3;
-    this.player = p; // Object is a player
+    this.victoryObjects = [];
+    this.victory = false;
+    this.timeOfVictory = 0;
+    this.victoryAnimation = 1;
+    this.player = {
+      p, // Object is a player
+    };
   }
 
   isDead() {
     if (this.dead) return true;
+    return false;
+  }
+
+  isVictory() {
+    if (this.victory) return true;
     return false;
   }
 
@@ -33,6 +45,14 @@ export default class ComplexObject {
   isEnvColliding() {
     for (let i = 0; i < this.objects.length; ++i) {
       const e = this.objects[i].isEnvColliding();
+      if (e) return e;
+    }
+    return null;
+  }
+
+  isEnvVictoryColliding() {
+    for (let i = 0; i < this.objects.length; ++i) {
+      const e = this.objects[i].isEnvVictoryColliding();
       if (e) return e;
     }
     return null;
@@ -95,6 +115,12 @@ export default class ComplexObject {
     });
   }
 
+  setLookAtView(x, y, z, blockSize) {
+    this.objects.forEach((o) => {
+      o.setLookAtView(x, y, z, blockSize);
+    });
+  }
+
   update(du) {
     this.objects.forEach((o) => {
       if (this.dead) o.kill(); // Unregister from spatial manager
@@ -105,7 +131,33 @@ export default class ComplexObject {
     if (this.dead && currentTime - this.timeOfDeath >= this.deathAnimation) {
       this.dead = false;
       managers.obj.remove(this); // Remove from object manager
-      if (this.player) addFrog();
+
+
+      // Add new player character
+      let frogLifes = Options.frogLifes.value;
+      frogLifes--;
+
+      if (this.player.p && frogLifes > 0) {
+        addFrog();
+
+        // Update options
+        const e = { target: { value: frogLifes } };
+        Options.frogLifes.id.slider.onchange(e);
+      }
+    }
+
+    // Victory animation done, then the object is reset
+    if (this.victory && currentTime - this.timeOfVictory >= this.victoryAnimation) {
+
+      const w = Options.frogWins.value + 1;
+
+      // Update options
+      const e = { target: { value: w } };
+      Options.frogWins.id.slider.onchange(e);
+
+      this.victory = false;
+      managers.obj.remove(this); // Remove from object manager
+      addFrog();
     }
   }
 
@@ -123,6 +175,18 @@ export default class ComplexObject {
 
   deathRender() {
     this.deathObjects.forEach((o) => {
+      o.render();
+    });
+  }
+
+  victoryUpdate(du) {
+    this.victoryObjects.forEach((o) => {
+      o.update(du);
+    });
+  }
+
+  victoryRender() {
+    this.victoryObjects.forEach((o) => {
       o.render();
     });
   }

@@ -118,4 +118,22 @@ export default class SpatialManager {
     }
     return null;
   }
+
+  // Hotfix, victory collision
+  envVictoryCollision(pos, radius) {
+
+    for (let i = 0; i < this.spatial.enviroments.length; ++i) {
+      const env = this.spatial.enviroments[i];
+
+      if (env) {
+        const blockSize = Options.cubeSize.value / 15;
+        const victory = -6 * blockSize; // second last row
+
+        if (pos.z <= victory) {
+          return env;
+        }
+      }
+    }
+    return null;
+  }
 }

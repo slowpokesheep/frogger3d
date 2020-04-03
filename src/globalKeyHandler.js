@@ -28,6 +28,12 @@ export function globalKeyHandling() {
   }
 }
 
+export function pressKey(keyCode) {
+  const isDown = Events.keys[keyCode];
+  return isDown;
+}
+
+
 // Single shot keys, keys that need to be triggered only ones
 export function eatKey(keyCode) {
   const isDown = Events.keys[keyCode];

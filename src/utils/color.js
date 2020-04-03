@@ -31,6 +31,17 @@ export const colorArray = [
   [1.0, 1.0, 1.0, 1.0], // white
 ];
 
+export const colorComplexObj = {
+  transRed: [0.2, 0, 0, 0.001],
+  transRed2: [0.4, 0, 0.2, 0.8],
+  transGreen: [0, 0.2, 0, 0.001],
+  transGreen2: [0, 0.2, 0.2, 0.8],
+  transBlue: [0, 0, 0.2, 0.001],
+  transBlue2: [0.2, 0, 0.4, 0.8],
+  transYellow: [0.6, 0.6, 0, 0.001],
+  transYellow2: [0.9, 0.9, 0, 0.8],
+};
+
 export const colorComplexArray = [
   [0.2, 0, 0, 0.001], // Transparent red
   [0, 0, 0.2, 0.001], // Transparent blue

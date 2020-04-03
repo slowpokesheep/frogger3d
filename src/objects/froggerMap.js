@@ -3,7 +3,7 @@ import { gl, shader, resetRender } from '../setup/webgl';
 import Options from '../options';
 import ComplexObject from './extensions/complexObject';
 
-import { colorObj } from '../utils/color';
+import { colorObj, colorComplexObj } from '../utils/color';
 
 // Primitives
 import Cube from './primitives/cube';
@@ -84,7 +84,40 @@ export default class FroggerMap extends ComplexObject {
 
         // Row 0 closest row (+z)
         if (i < this.froggerMap.row[0]) { // Row 0
-          gl.uniform4fv(shader.fragCol, colorObj.black);
+
+          if (i >= Options.frogLifes.value * 2) {
+            gl.uniform4fv(shader.fragCol, colorObj.black);
+          }
+          // Draw frog lifes
+          else if (i >= (Options.frogLifes.value - 15) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transRed2);
+          }
+          else if (i >= (Options.frogLifes.value - 30) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transGreen2);
+          }
+          else if (i >= (Options.frogLifes.value - 45) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transYellow2);
+          }
+          else if (i >= (Options.frogLifes.value - 60) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue2);
+          }
+          else if (i >= (Options.frogLifes.value - 75) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transRed);
+          }
+          else if (i >= (Options.frogLifes.value - 90) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transGreen);
+          }
+          else {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue);
+          }
+          /*
+          if (i >= Options.frogLifes.value * 2) {
+            gl.uniform4fv(shader.fragCol, colorObj.black);
+          }
+          else { // Draw frog lifes
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue2);
+          }
+          */
         }
         else if (i >= this.froggerMap.row[0] && i < this.froggerMap.row[1]) { // Row 1
           gl.uniform4fv(shader.fragCol, colorObj.magenta);
@@ -126,7 +159,31 @@ export default class FroggerMap extends ComplexObject {
           gl.uniform4fv(shader.fragCol, colorObj.green);
         }
         else if (i >= this.froggerMap.row[13] && i < this.froggerMap.row[14]) { // Row 14
-          gl.uniform4fv(shader.fragCol, colorObj.black);
+          if (i >= this.froggerMap.row[13] + Options.frogWins.value * 2) {
+            gl.uniform4fv(shader.fragCol, colorObj.black);
+          }
+          // Draw wins
+          else if (i >= this.froggerMap.row[13] + (Options.frogWins.value - 15) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transRed2);
+          }
+          else if (i >= this.froggerMap.row[13] + (Options.frogWins.value - 30) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transGreen2);
+          }
+          else if (i >= this.froggerMap.row[13] + (Options.frogWins.value - 45) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transYellow2);
+          }
+          else if (i >= this.froggerMap.row[13] + (Options.frogWins.value - 60) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue2);
+          }
+          else if (i >= this.froggerMap.row[13] + (Options.frogWins.value - 75) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transRed);
+          }
+          else if (i >= this.froggerMap.row[13] + (Options.frogWins.value - 90) * 2) {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transGreen);
+          }
+          else {
+            gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue);
+          }
         }
       }
 

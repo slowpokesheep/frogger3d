@@ -11,7 +11,7 @@ import {
 import { gl, shader } from '../../setup/webgl';
 import { managers } from '../../index';
 import Options from '../../options';
-import { eatKey } from '../../globalKeyHandler';
+import { eatKey, pressKey } from '../../globalKeyHandler';
 import Events from '../../events';
 import { flatten } from '../../Common/MV';
 
@@ -31,19 +31,21 @@ export default class BasicObject {
     };
 
     this.basicObject = {
-      camera: false,
+      camera: false, // Active camera (wasd moves camera)
+      lookAt: false, // LookAt camera or normal camera
       killer: k,
       parent: p,
     };
 
     this.basicKeys = {
-      camera: 'C'.charCodeAt(0),
+      camera: 'C'.charCodeAt(0), // Camera mode
+      lookAt: 'V'.charCodeAt(0), // LookAt mode
       up: 'W'.charCodeAt(0),    // y+
       left: 'A'.charCodeAt(0),  // x-
       down: 'S'.charCodeAt(0),  // y-
       right: 'D'.charCodeAt(0), // x+
-      in: 'E'.charCodeAt(0),    // z-
-      out: 'Q'.charCodeAt(0),   // z+
+      in: 'E'.charCodeAt(0),    // z-, lookAt +y
+      out: 'Q'.charCodeAt(0),   // z+, lookAt -y
     };
 
     this.deathVector = { x: 0, y: 0, z: 0 };
@@ -96,6 +98,11 @@ export default class BasicObject {
 
   getColors() { return this.prim.colors; }
 
+  isLookAt() {
+    if (this.basicObject.lookAt) return true;
+    return false;
+  }
+
   // Checks
   isColliding() {
     managers.spatial.unregister(this);
@@ -128,6 +135,13 @@ export default class BasicObject {
   isEnvColliding() {
     managers.spatial.unregister(this);
     const e = managers.spatial.envCollision(this.model.t, this.model.s.x / 2);
+    managers.spatial.register(this);
+    return e;
+  }
+
+  isEnvVictoryColliding() {
+    managers.spatial.unregister(this);
+    const e = managers.spatial.envVictoryCollision(this.model.t, this.model.s.x / 2);
     managers.spatial.register(this);
     return e;
   }
@@ -193,12 +207,37 @@ export default class BasicObject {
   }
 
   setView() {
+    if (this.basicObject.lookAt) {
+      return;
+    }
+
     this.view.matrix = viewMatrix(
       scaleMatrix(this.view.s.x, this.view.s.y, this.view.s.z),
       rotateXMatrix(this.view.r.x),
       rotateYMatrix(this.view.r.y),
       rotateZMatrix(this.view.r.z),
       translateMatrix(this.view.t.x, this.view.t.y, this.view.t.z),
+    );
+  }
+
+  setLookAtView(x, y, z, blockSize) {
+
+    const newZ = (-Math.floor((z / blockSize) - 7) + 1);
+
+    this.view.t.x = -x;
+    this.view.t.y = -y * 1.5; // -8 * 1.5 = 12
+    this.view.t.z = (newZ * blockSize) - 30;
+
+    this.view.r.x = 0;
+
+    // Translate to (0, 0, 0) to rotate correctly
+    this.view.matrix = viewMatrix(
+      scaleMatrix(this.view.s.x, this.view.s.y, this.view.s.z),
+      translateMatrix(this.view.t.x, this.view.t.y, this.view.t.z),
+      rotateXMatrix(this.view.r.x),
+      rotateYMatrix(this.view.r.y),
+      rotateZMatrix(this.view.r.z),
+      translateMatrix(0, 0, 0),
     );
   }
 
@@ -243,7 +282,9 @@ export default class BasicObject {
       optionsChange = true;
     }
 
-    if (optionsChange) this.setView();
+    if (optionsChange) {
+      if (!this.basicObject.lookAt) this.setView();
+    }
 
     if (Options.resetCamera.on) {
       this.resetCamera();
@@ -280,27 +321,28 @@ export default class BasicObject {
 
     this.checkOptions();
 
-    if (Events.mouse.update) {
-      const { spin } = Events.mouse;
-      this.view.r.x = spin.x;
-      this.view.r.y = spin.y;
-
-      this.updateOptions();
-      this.setView();
-    }
-
-    if (Events.mouse.z !== Events.mouse.last.z) {
-      Events.mouse.last.z = Events.mouse.z;
-      this.view.t.z = Events.mouse.z;
-      this.updateOptions();
-      this.setView();
-    }
-
+    // Activate camera keys
     if (eatKey(this.basicKeys.camera)) {
       this.basicObject.camera = !this.basicObject.camera;
     }
 
     if (this.basicObject.camera) {
+
+      if (Events.mouse.update && !Options.lookAt) {
+        const { spin } = Events.mouse;
+        this.view.r.x = spin.x;
+        this.view.r.y = spin.y;
+
+        this.updateOptions();
+        this.setView();
+      }
+
+      if (Events.mouse.z !== Events.mouse.last.z && !Options.lookAt) {
+        Events.mouse.last.z = Events.mouse.z;
+        this.view.t.z = Events.mouse.z;
+        this.updateOptions();
+        this.setView();
+      }
 
       // Keyboard camera movement
       if (eatKey(this.basicKeys.up)) {
@@ -337,6 +379,45 @@ export default class BasicObject {
         this.view.t.z += 1;
         this.updateOptions();
         this.setView();
+      }
+    }
+
+    // Activate lookAt camera
+    if (eatKey(this.basicKeys.lookAt)) {
+      this.basicObject.lookAt = !this.basicObject.lookAt;
+      Options.lookAt = this.basicObject.lookAt;
+      this.basicObject.camera = false;
+    }
+
+    // Q and e, hold to look left and right
+    if (this.basicObject.lookAt) {
+      if (pressKey(this.basicKeys.in)) { // E
+        this.view.r.y += 10;
+
+        if (this.view.r.y > 90) this.view.r.y = 90;
+
+        this.updateOptions();
+        this.setLookAtView();
+      }
+      else if (pressKey(this.basicKeys.out)) { // Q
+        this.view.r.y -= 10;
+
+        if (this.view.r.y < -90) this.view.r.y = -90;
+
+        this.updateOptions();
+        this.setLookAtView();
+      }
+      else if (this.view.r > 0) {
+        this.view.r.y -= 10;
+        if (this.view.r.y < 0) this.view.r.y = 0; 
+        this.updateOptions();
+        this.setLookAtView();
+      }
+      else {
+        this.view.r.y += 10;
+        if (this.view.r.y > 0) this.view.r.y = 0;
+        this.updateOptions();
+        this.setLookAtView();
       }
     }
   }

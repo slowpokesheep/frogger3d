@@ -4,28 +4,26 @@ import { addSnake, addTail } from './loader';
 export default class Options {
   static init() {
 
-    // Sliders
-    this.growRate = {
-      value: 50,
-      id: {
-        text: document.getElementById('growRateText'),
-        slider: document.getElementById('growRateSlider'),
-      },
-    };
-
-    this.amountMove = {
-      value: 10,
-      id: {
-        text: document.getElementById('moveAmountText'),
-        slider: document.getElementById('moveAmountSlider'),
-      },
-    };
+    this.lookAt = false;
 
     this.cubeSize = {
       value: 50,
+    };
+
+    // Sliders
+    this.frogLifes = {
+      value: 3,
       id: {
-        text: document.getElementById('cubeSizeText'),
-        slider: document.getElementById('cubeSizeSlider'),
+        text: document.getElementById('frogLifesText'),
+        slider: document.getElementById('frogLifesSlider'),
+      },
+    };
+
+    this.frogWins = {
+      value: 0,
+      id: {
+        text: document.getElementById('frogWinsText'),
+        slider: document.getElementById('frogWinsSlider'),
       },
     };
 
@@ -92,68 +90,7 @@ export default class Options {
       },
     };
 
-    this.randomDir = {
-      on: true,
-      id: {
-        toggle: document.getElementById('randomDirToggle'),
-      },
-    };
-
-    this.xUp = {
-      on: false,
-      id: {
-        toggle: document.getElementById('xUpToggle'),
-      },
-    };
-
-    this.xDown = {
-      on: false,
-      id: {
-        toggle: document.getElementById('xDownToggle'),
-      },
-    };
-
-    this.yUp = {
-      on: false,
-      id: {
-        toggle: document.getElementById('yUpToggle'),
-      },
-    };
-
-    this.yDown = {
-      on: false,
-      id: {
-        toggle: document.getElementById('yDownToggle'),
-      },
-    };
-
-    this.zUp = {
-      on: false,
-      id: {
-        toggle: document.getElementById('zUpToggle'),
-      },
-    };
-
-    this.zDown = {
-      on: false,
-      id: {
-        toggle: document.getElementById('zDownToggle'),
-      },
-    };
-
     // Buttons
-    this.addSnake = {
-      id: {
-        button: document.getElementById('addSnakeButton'),
-      },
-    };
-
-    this.addTail = {
-      id: {
-        button: document.getElementById('addTailButton'),
-      },
-    };
-
     this.reset = {
       id: {
         button: document.getElementById('resetButton'),
@@ -169,19 +106,16 @@ export default class Options {
 
     // Sliders
 
-    this.growRate.id.slider.onchange = (e) => {
-      this.growRate.value = parseInt(e.target.value, 10);
-      this.growRate.id.text.textContent = this.growRate.value;
+    this.frogLifes.id.slider.onchange = (e) => {
+      this.frogLifes.value = parseInt(e.target.value, 10);
+      this.frogLifes.id.slider.value = this.frogLifes.value;
+      this.frogLifes.id.text.textContent = this.frogLifes.value;
     };
 
-    this.amountMove.id.slider.onchange = (e) => {
-      this.amountMove.value = parseInt(e.target.value, 10);
-      this.amountMove.id.text.textContent = this.amountMove.value;
-    };
-
-    this.cubeSize.id.slider.onchange = (e) => {
-      this.cubeSize.value = parseInt(e.target.value, 10);
-      this.cubeSize.id.text.textContent = this.cubeSize.value;
+    this.frogWins.id.slider.onchange = (e) => {
+      this.frogWins.value = parseInt(e.target.value, 10);
+      this.frogWins.id.slider.value = this.frogWins.value;
+      this.frogWins.id.text.textContent = this.frogWins.value;
     };
 
     // Camera
@@ -232,58 +166,7 @@ export default class Options {
       this.mortal.id.text.textContent = this.mortal.text[toggle];
     };
 
-    this.randomDir.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.randomDir.on = !this.randomDir.on;
-      this.randomDir.id.toggle.checked = this.randomDir.on;
-    };
-
-    this.xUp.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.xUp.on = !this.xUp.on;
-      this.xUp.id.toggle.checked = this.xUp.on;
-    };
-
-    this.xDown.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.xDown.on = !this.xDown.on;
-      this.xDown.id.toggle.checked = this.xDown.on;
-    };
-
-    this.yUp.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.yUp.on = !this.yUp.on;
-      this.yUp.id.toggle.checked = this.yUp.on;
-    };
-
-    this.yDown.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.yDown.on = !this.yDown.on;
-      this.yDown.id.toggle.checked = this.yDown.on;
-    };
-
-    this.zUp.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.zUp.on = !this.zUp.on;
-      this.zUp.id.toggle.checked = this.zUp.on;
-    };
-
-    this.zDown.id.toggle.onchange = (e) => {
-      this.resetDirectionToggles();
-      this.zDown.on = !this.zDown.on;
-      this.zDown.id.toggle.checked = this.zDown.on;
-    };
-
     // Buttons
-
-    this.addSnake.id.button.onclick = (e) => {
-      addSnake();
-    };
-
-    this.addTail.id.button.onclick = (e) => {
-      addTail();
-    };
-
     this.reset.id.button.onclick = (e) => {
       window.location.reload();
     };
@@ -291,28 +174,5 @@ export default class Options {
     this.resetCamera.id.button.onclick = (e) => {
       this.resetCamera.on = true;
     };
-  }
-
-  static resetDirectionToggles() {
-    this.randomDir.on = false;
-    this.randomDir.id.toggle.checked = this.randomDir.on;
-
-    this.xUp.on = false;
-    this.xUp.id.toggle.checked = this.xUp.on;
-
-    this.xDown.on = false;
-    this.xDown.id.toggle.checked = this.xDown.on;
-
-    this.yUp.on = false;
-    this.yUp.id.toggle.checked = this.yUp.on;
-
-    this.yDown.on = false;
-    this.yDown.id.toggle.checked = this.yDown.on;
-
-    this.zUp.on = false;
-    this.zUp.id.toggle.checked = this.zUp.on;
-
-    this.zDown.on = false;
-    this.zDown.id.toggle.checked = this.zDown.on;
   }
 }
