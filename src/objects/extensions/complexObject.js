@@ -14,7 +14,7 @@ export default class ComplexObject {
     this.deathObjects = [];
     this.dead = false;
     this.timeOfDeath = 0;
-    this.deathAnimation = 3;
+    this.deathAnimation = 2;
     this.victoryObjects = [];
     this.victory = false;
     this.timeOfVictory = 0;
@@ -115,9 +115,27 @@ export default class ComplexObject {
     });
   }
 
+  setNormalView() {
+    this.objects.forEach((o) => {
+      o.setNormalView();
+    });
+  }
+
+  setLookAtViewOn(x, y, z, blockSize) {
+    this.objects.forEach((o) => {
+      o.setLookAtViewOn(x, y, z, blockSize);
+    });
+  }
+
   setLookAtView(x, y, z, blockSize) {
     this.objects.forEach((o) => {
       o.setLookAtView(x, y, z, blockSize);
+    });
+  }
+
+  resetView() {
+    this.objects.forEach((o) => {
+      o.resetView();
     });
   }
 
@@ -140,6 +158,13 @@ export default class ComplexObject {
       if (this.player.p && frogLifes > 0) {
         addFrog();
 
+        if (this.objects[0].basicObject.setNormalView) {
+          const newObj = managers.obj.getNewestObject();
+          const { x, y, z, blockSize } = newObj.frog;
+  
+          this.setLookAtViewOn(x, y, z, blockSize);
+        }
+
         // Update options
         const e = { target: { value: frogLifes } };
         Options.frogLifes.id.slider.onchange(e);
@@ -158,6 +183,13 @@ export default class ComplexObject {
       this.victory = false;
       managers.obj.remove(this); // Remove from object manager
       addFrog();
+
+      if (this.objects[0].basicObject.setNormalView) {
+        const newObj = managers.obj.getNewestObject();
+        const { x, y, z, blockSize } = newObj.frog;
+
+        this.setLookAtViewOn(x, y, z, blockSize);
+      }
     }
   }
 

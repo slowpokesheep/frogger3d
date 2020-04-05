@@ -33,6 +33,7 @@ export default class BasicObject {
     this.basicObject = {
       camera: false, // Active camera (wasd moves camera)
       lookAt: false, // LookAt camera or normal camera
+      setNormalView: false,
       killer: k,
       parent: p,
     };
@@ -207,10 +208,6 @@ export default class BasicObject {
   }
 
   setView() {
-    if (this.basicObject.lookAt) {
-      return;
-    }
-
     this.view.matrix = viewMatrix(
       scaleMatrix(this.view.s.x, this.view.s.y, this.view.s.z),
       rotateXMatrix(this.view.r.x),
@@ -239,6 +236,38 @@ export default class BasicObject {
       rotateZMatrix(this.view.r.z),
       translateMatrix(0, 0, 0),
     );
+  }
+
+  setNormalView() {
+    this.basicObject.setNormalView = true;
+    this.basicObject.lookAt = false;
+
+    Options.lookAt.id.toggle.onchange({
+      target: {
+        value: false,
+      },
+    });
+
+    this.resetCamera();
+    this.setView();
+  }
+
+  setLookAtViewOn(x, y, z, blockSize) {
+    this.basicObject.lookAt = false;
+
+    Options.lookAt.id.toggle.onchange({
+      target: {
+        value: false,
+      },
+    });
+
+    this.resetCamera();
+    this.setLookAtView(x, y, z, blockSize);
+  }
+
+  resetView() {
+    this.resetCamera();
+    this.setView();
   }
 
   kill() {
@@ -282,8 +311,18 @@ export default class BasicObject {
       optionsChange = true;
     }
 
+    // Fix lookAt toggle
+    if (this.basicObject.lookAt !== Options.lookAt.on) {
+      this.basicObject.lookAt = Options.lookAt.on;
+    }
+
     if (optionsChange) {
       if (!this.basicObject.lookAt) this.setView();
+    }
+
+    // Fix movement camera toggle
+    if (this.basicObject.camera !== Options.cameraOn.on) {
+      this.basicObject.camera = Options.cameraOn.on;
     }
 
     if (Options.resetCamera.on) {
@@ -324,11 +363,13 @@ export default class BasicObject {
     // Activate camera keys
     if (eatKey(this.basicKeys.camera)) {
       this.basicObject.camera = !this.basicObject.camera;
+      const e = { target: { value: this.basicObject.camera } };
+      Options.cameraOn.id.toggle.onchange(e);
     }
 
     if (this.basicObject.camera) {
 
-      if (Events.mouse.update && !Options.lookAt) {
+      if (Events.mouse.update && !Options.lookAt.on) {
         const { spin } = Events.mouse;
         this.view.r.x = spin.x;
         this.view.r.y = spin.y;
@@ -337,14 +378,14 @@ export default class BasicObject {
         this.setView();
       }
 
-      if (Events.mouse.z !== Events.mouse.last.z && !Options.lookAt) {
+      if (Events.mouse.z !== Events.mouse.last.z && !Options.lookAt.on) {
         Events.mouse.last.z = Events.mouse.z;
         this.view.t.z = Events.mouse.z;
         this.updateOptions();
         this.setView();
       }
 
-      // Keyboard camera movement
+      // Keyboard camera movements
       if (eatKey(this.basicKeys.up)) {
         this.view.t.y += 1;
         this.updateOptions();
@@ -385,7 +426,9 @@ export default class BasicObject {
     // Activate lookAt camera
     if (eatKey(this.basicKeys.lookAt)) {
       this.basicObject.lookAt = !this.basicObject.lookAt;
-      Options.lookAt = this.basicObject.lookAt;
+      const e = { target: { value: this.basicObject.lookAt } };
+      Options.lookAt.id.toggle.onchange(e);
+
       this.basicObject.camera = false;
     }
 
@@ -409,7 +452,7 @@ export default class BasicObject {
       }
       else if (this.view.r > 0) {
         this.view.r.y -= 10;
-        if (this.view.r.y < 0) this.view.r.y = 0; 
+        if (this.view.r.y < 0) this.view.r.y = 0;
         this.updateOptions();
         this.setLookAtView();
       }
@@ -419,6 +462,9 @@ export default class BasicObject {
         this.updateOptions();
         this.setLookAtView();
       }
+    }
+    else {
+      this.setView();
     }
   }
 

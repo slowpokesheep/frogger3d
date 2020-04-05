@@ -93,6 +93,22 @@ export default class ObjectManager {
     }
   }
 
+  getNewestObject() {
+    return this.objects[this.objects.length - 1];
+  }
+
+  // Lazy fix
+  setNormalView() {
+    // Complex object update, view matrix
+    this.objects.forEach((obj) => {
+      obj.setNormalView();
+    });
+
+    this.enviroments.forEach((obj) => {
+      obj.setNormalView();
+    });
+  }
+
   setLookAtView(x, y, z, blockSize) {
     // Complex object update, view matrix
     this.objects.forEach((obj) => {
@@ -101,6 +117,17 @@ export default class ObjectManager {
 
     this.enviroments.forEach((obj) => {
       obj.setLookAtView(x, y, z, blockSize);
+    });
+  }
+
+  resetView() {
+    // Complex object update, view matrix
+    this.objects.forEach((obj) => {
+      obj.resetView();
+    });
+
+    this.enviroments.forEach((obj) => {
+      obj.resetView();
     });
   }
 

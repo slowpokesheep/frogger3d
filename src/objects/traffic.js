@@ -42,7 +42,6 @@ export default class Traffic extends ComplexObject {
   }
 
   objectUpdate(du) {
-    //this.checkOptions();
 
     this.objects.forEach((obj) => {
       if (obj.isSubDead()) obj.deathUpdate(du);

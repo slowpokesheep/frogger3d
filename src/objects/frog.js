@@ -86,7 +86,7 @@ export default class Frog extends ComplexObject {
       this.frog.direction = 1;
     }
 
-    if (Options.lookAt) {
+    if (Options.lookAt.on) {
       const { x, y, z } = this.objects[0].model.t;
       managers.obj.setLookAtView(x, y, z, this.frog.blockSize);
     }
@@ -180,6 +180,10 @@ export default class Frog extends ComplexObject {
     }
     else if (ob && !this.dead && Options.mortal.on) {
 
+      if (Options.lookAt.on) {
+        managers.obj.setNormalView();
+      }
+
       this.dead = true;
       this.death(); // Spawn death animation
       this.timeOfDeath = currentTime; // Death animation play time
@@ -197,6 +201,11 @@ export default class Frog extends ComplexObject {
       // Victory collision, last row
       envOb = this.isEnvVictoryColliding();
       if (envOb && !ob && !this.victory) {
+
+        if (Options.lookAt.on) {
+          managers.obj.setNormalView();
+        }
+
         this.victory = true;
         this.timeOfVictory = currentTime; // Death animation play time
       }
@@ -311,12 +320,18 @@ export default class Frog extends ComplexObject {
   }
 
   objectUpdate(du) {
-    //this.checkOptions();/
 
     // Movement update
     this.objects.forEach((o, i) => {
       this.move(o);
       this.checkCollision(du, o, i);
+    });
+  }
+
+  deathRender() {
+    this.deathObjects.forEach((o) => {
+      gl.uniform4fv(shader.fragCol, colorObj.green);
+      o.render();
     });
   }
 

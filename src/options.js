@@ -4,8 +4,6 @@ import { addSnake, addTail } from './loader';
 export default class Options {
   static init() {
 
-    this.lookAt = false;
-
     this.cubeSize = {
       value: 50,
     };
@@ -79,7 +77,7 @@ export default class Options {
 
     // Toggles
     this.mortal = {
-      on: false,
+      on: true,
       text: [
         'Mortal',
         'Immortal',
@@ -87,6 +85,34 @@ export default class Options {
       id: {
         text: document.getElementById('mortalText'),
         toggle: document.getElementById('mortalToggle'),
+      },
+    };
+
+    this.movementOn = {
+      on: true,
+      id: {
+        toggle: document.getElementById('movementOnToggle'),
+      },
+    };
+
+    this.cameraOn = {
+      on: false,
+      id: {
+        toggle: document.getElementById('cameraOnToggle'),
+      },
+    };
+
+    this.lookAt = {
+      on: false,
+      id: {
+        toggle: document.getElementById('lookAtToggle'),
+      },
+    };
+
+    this.normalView = {
+      on: true,
+      id: {
+        toggle: document.getElementById('normalViewToggle'),
       },
     };
 
@@ -166,6 +192,32 @@ export default class Options {
       this.mortal.id.text.textContent = this.mortal.text[toggle];
     };
 
+    // Movement, camera toggle pair
+    this.movementOn.id.toggle.onchange = (e) => {
+      this.movementOn.on = !this.movementOn.on;
+      this.movementOn.id.toggle.checked = this.movementOn.on;
+      this.resetCameraOn();
+    };
+
+    this.cameraOn.id.toggle.onchange = (e) => {
+      this.cameraOn.on = !this.cameraOn.on;
+      this.cameraOn.id.toggle.checked = this.cameraOn.on;
+      this.resetMovement();
+    };
+
+    this.lookAt.id.toggle.onchange = (e) => {
+      this.lookAt.on = !this.lookAt.on;
+      this.lookAt.id.toggle.checked = this.lookAt.on;
+      this.resetNormalView();
+    };
+
+    this.normalView.id.toggle.onchange = (e) => {
+      this.lookAt.on = !this.lookAt.on;
+      this.lookAt.id.toggle.checked = this.lookAt.on;
+      this.reseLookAt();
+    };
+
+
     // Buttons
     this.reset.id.button.onclick = (e) => {
       window.location.reload();
@@ -174,5 +226,25 @@ export default class Options {
     this.resetCamera.id.button.onclick = (e) => {
       this.resetCamera.on = true;
     };
+  }
+
+  static resetMovement() {
+    this.movementOn.on = !this.cameraOn.on;
+    this.movementOn.id.toggle.checked = this.movementOn.on;
+  }
+
+  static resetCameraOn() {
+    this.cameraOn.on = !this.movementOn.on;
+    this.cameraOn.id.toggle.checked = this.cameraOn.on;
+  }
+
+  static reseLookAt() {
+    this.lookAt.on = !this.lookAt.on;
+    this.lookAt.id.toggle.checked = this.lookAt.on;
+  }
+
+  static resetNormalView() {
+    this.normalView.on = !this.normalView.on;
+    this.normalView.id.toggle.checked = this.normalView.on;
   }
 }

@@ -110,14 +110,6 @@ export default class FroggerMap extends ComplexObject {
           else {
             gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue);
           }
-          /*
-          if (i >= Options.frogLifes.value * 2) {
-            gl.uniform4fv(shader.fragCol, colorObj.black);
-          }
-          else { // Draw frog lifes
-            gl.uniform4fv(shader.fragCol, colorComplexObj.transBlue2);
-          }
-          */
         }
         else if (i >= this.froggerMap.row[0] && i < this.froggerMap.row[1]) { // Row 1
           gl.uniform4fv(shader.fragCol, colorObj.magenta);

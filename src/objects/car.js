@@ -34,9 +34,6 @@ export default class Car extends ComplexObject {
     this.car.right = 7 * this.car.move;
     this.car.left = -7 * this.car.move;
 
-    //this.objects.push(new Cube());
-    //this.objects[0].setTranslation(this.car.x, this.car.y, this.car.z);
-
     // Head
     this.objects.push(new Cube());
     this.objects[0].setTranslation(this.car.x, this.car.y, this.car.z);
@@ -129,7 +126,6 @@ export default class Car extends ComplexObject {
   }
 
   objectUpdate(du) {
-    //this.checkOptions();
 
     // Movement update
     if (currentTime - this.car.prevTime >= this.car.updateSpeed) {

@@ -40,10 +40,10 @@
       <div class="multiButtonContainer">
         <div class="toggleContainer">
           <div class="toggleText">
-            <p id="mortalText">Immortal</p>
+            <p id="mortalText">Mortal</p>
           </div>
           <label class="switch">
-            <input id="mortalToggle" autocomplete="off" type="checkbox" checked>
+            <input id="mortalToggle" autocomplete="off" type="checkbox">
             <span class="toggle"></span>
           </label>
         </div>
@@ -59,20 +59,117 @@
         </div>
       </div>
 
-      <div class="optionsTitle">
-        <h3>Controls</h3>
+      <div class="multiButtonContainer">
+        <div class="optionsTitle">
+          <h3>Mode</h3>
+        </div>
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>Movement</p>
+          </div>
+          <label class="switch">
+            <input id="movementOnToggle" autocomplete="off" type="checkbox" checked>
+            <span class="toggle"></span>
+          </label>
+        </div>
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>Camera</p>
+          </div>
+          <label class="switch">
+            <input id="cameraOnToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
       </div>
 
-      <ul class="optionsList">
-        <li>WASD - Movement</li>
-        <li>C - Camera Mode</li>
-        <li>WASD EQ - Move camera (Camera Mode)</li>
-        <li>V - LookAt Mode</li>
-        <li>Q - Look left (LookAt Mode)</li>
-        <li>E - Look right (LookAt Mode)</li>
-      </ul>
+      <div class="multiButtonContainer">
+        <div class="optionsTitle">
+          <h3>View</h3>
+        </div>
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>LookAt</p>
+          </div>
+          <label class="switch">
+            <input id="lookAtToggle" autocomplete="off" type="checkbox">
+            <span class="toggle"></span>
+          </label>
+        </div>
+        <div class="toggleContainer">
+          <div class="toggleText">
+            <p>Normal</p>
+          </div>
+          <label class="switch">
+            <input id="normalViewToggle" autocomplete="off" type="checkbox" checked>
+            <span class="toggle"></span>
+          </label>
+        </div>
       </div>
 
+      <div class="multiControlsContainer">
+
+        <div class="controlsContainer">
+          <div class="optionsTitle">
+            <h3>LookAt View</h3>
+          </div>
+          <div class="controlsList">
+            <ul class="optionsList">
+              <li><b>Q</b> - Look left</li>
+              <li><b>E</b> - Look Right</li>
+            </ul>
+          </div>
+        </div>
+  
+        <div class="controlsContainer">
+          <div class="optionsTitle">
+            <h3>Normal View</h3>
+          </div>
+          <div class="controlsList">
+            <ul class="optionsList">
+              <li><b>WASD</b> - Move</li>
+            </ul>
+          </div>
+  
+        </div>
+  
+  
+        </div>
+
+      <div class="multiControlsContainer">
+      <div class="controlsContainer">
+        <div class="optionsTitle">
+          <h3>Mode</h3>
+        </div>
+
+        <div class="controlsList">
+
+          <ul class="optionsList">
+            <li><b>C</b> - Change Mode</li>
+            <li><b>V</b> - Change View</li>
+          </ul>
+        </div>
+      </div>
+
+        <div class="controlsContainer">
+
+          <div class="optionsTitle">
+            <h3>Debug</h3>
+          </div>
+          
+          <div class="controlsList">
+            
+            <ul class="optionsList">
+              <li><b>P</b> - Pause</li>
+              <li><b>O</b> - Single Step</li>
+            </ul>
+          </div>
+        </div>
+    </div>
+
+
+    </div>
+    </div>
       </div>
 
     </div>

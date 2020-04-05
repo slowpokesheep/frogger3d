@@ -15,15 +15,24 @@ git clone git@github.com:slowpokesheep/frogger3d.git
 npm install
 ```
 
-## Temp Readme
-
----
-
 ## Game Running
 
 [3D Frogger](https://notendur.hi.is/~hgg29/grafik/verkefni03/)
 
-## Controls
+## Movement Controls
+
+* `W` - Up
+* `A` - Left
+* `S` - Down
+* `D` - Right
+* `Q` - Look Left (LookAt View)
+* `E` - Look Right (LookAt View)
+
+## Mode Controls
+* `C` - Toggle between Movement Controls and Camera Controls
+* `V` - Toggle between LookAt View and Normal View
+
+## Camera Controls
 
 * `W` - Translate y+ 
 * `A` - Translate x- 
